@@ -29,10 +29,33 @@ type UserLoginRes struct {
 	Permissions []string            `json:"permissions"`
 }
 
+type UserLoginReq2 struct {
+	g.Meta   `path:"/login2" tags:"系统后台/登录" method:"post" summary:"用户登录"`
+	UserName string `p:"user_name" v:"required#用户名不能为空"`
+	Password string `p:"password" v:"required#密码不能为空"`
+}
+
+type UserLoginRes2 struct {
+	g.Meta   `mime:"application/json"`
+	UserInfo *model.LoginUserRes `json:"userInfo"`
+	Token    string              `json:"token"`
+}
+
 type UserLoginOutReq struct {
 	g.Meta `path:"/logout" tags:"系统后台/登录" method:"get" summary:"退出登录"`
 	commonApi.Author
 }
 
 type UserLoginOutRes struct {
+}
+
+type TokenInstrospectReq struct {
+	g.Meta `path:"/token/introspect" tags:"系统后台/登录" method:"post" summary:"Token验证"`
+	commonApi.Author
+}
+
+type TokenInstrospectRes struct {
+	g.Meta   `mime:"application/json"`
+	UserID   int64  `json:"user_id"`
+	UserName string `json:"user_name"`
 }

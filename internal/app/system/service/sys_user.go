@@ -7,6 +7,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/container/garray"
 
 	"github.com/gogf/gf/v2/container/gset"
@@ -40,6 +41,7 @@ type (
 		GetByIdsUser(ctx context.Context, req *system.UserByIdsReq) (total interface{}, userList []*entity.SysUser, err error)
 		GetUsersRoleDept(ctx context.Context, userList []*entity.SysUser) (users []*model.SysUserRoleDeptRes, err error)
 		Add(ctx context.Context, req *system.UserAddReq) (err error)
+		Register(ctx context.Context, req *system.UserRegisterReq) (id int64, err error)
 		Edit(ctx context.Context, req *system.UserEditReq) (err error)
 		AddUserPost(ctx context.Context, tx gdb.TX, postIds []int64, userId int64) (err error)
 		EditUserRole(ctx context.Context, roleIds []uint, userId int64) (err error)

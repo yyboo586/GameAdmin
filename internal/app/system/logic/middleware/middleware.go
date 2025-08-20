@@ -10,6 +10,7 @@ package middleware
 import (
 	"context"
 	"errors"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/gogf/gf/v2/container/garray"
 	"github.com/gogf/gf/v2/container/gmap"

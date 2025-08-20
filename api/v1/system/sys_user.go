@@ -75,6 +75,18 @@ type UserAddReq struct {
 type UserAddRes struct {
 }
 
+// UserRegister 用户自注册账户
+type UserRegisterReq struct {
+	g.Meta   `path:"/user/register" tags:"系统后台/用户管理" method:"post" summary:"用户自注册账户"`
+	UserName string `p:"user_name" v:"required#用户账号不能为空" dc:"账户名"`
+	Password string `p:"password" v:"required|password2#密码不能为空|密码必须包含大小写字母和数字,长度在6~18之间" dc:"账户密码"`
+}
+
+type UserRegisterRes struct {
+	g.Meta `mime:"application/json"`
+	ID     int64 `json:"id"`
+}
+
 // UserEditReq 修改用户参数
 type UserEditReq struct {
 	g.Meta `path:"/user/edit" tags:"系统后台/用户管理" method:"put" summary:"修改用户"`

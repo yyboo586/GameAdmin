@@ -1,0 +1,13 @@
+[Unit]
+Description=Game Admin Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/usr/share/game_admin
+ExecStart=/usr/share/game_admin/game_admin
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

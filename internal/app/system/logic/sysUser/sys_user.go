@@ -10,11 +10,12 @@ package sysUser
 import (
 	"context"
 	"fmt"
+	"reflect"
+
 	"github.com/gogf/gf/v2/container/garray"
 	"github.com/gogf/gf/v2/encoding/gurl"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/tiger1103/gfast/v3/library/libWebsocket"
-	"reflect"
 
 	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/database/gdb"
@@ -678,6 +679,35 @@ func (s *sSysUser) Add(ctx context.Context, req *system.UserAddReq) (err error) 
 	return
 }
 
+func (s *sSysUser) Register(ctx context.Context, req *system.UserRegisterReq) (id int64, err error) {
+	err = s.UserNameExists(ctx, req.UserName)
+	if err != nil {
+		return
+	}
+	userSalt := grand.S(10)
+	req.Password = libUtils.EncryptPassword(req.Password, userSalt)
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		err = g.Try(ctx, func(ctx context.Context) {
+			id, err = dao.SysUser.Ctx(ctx).TX(tx).InsertAndGetId(do.SysUser{
+				UserName:     req.UserName,
+				Mobile:       "",
+				UserNickname: req.UserName,
+				UserPassword: req.Password,
+				UserSalt:     userSalt,
+				UserStatus:   1,
+				UserEmail:    "",
+				Sex:          0,
+				DeptId:       0,
+				Remark:       "",
+				IsAdmin:      0,
+			})
+			liberr.ErrIsNil(ctx, err, "添加用户失败")
+		})
+		return err
+	})
+	return
+}
+
 func (s *sSysUser) Edit(ctx context.Context, req *system.UserEditReq) (err error) {
 	err = s.UserNameOrMobileExists(ctx, "", req.Mobile, req.UserId)
 	if err != nil {
@@ -791,6 +821,16 @@ func (s *sSysUser) SetUserRole(ctx context.Context, roleId uint, userIds []uint6
 	return
 }
 
+func (s *sSysUser) UserNameExists(ctx context.Context, userName string) error {
+	exist, err := dao.SysUser.Ctx(ctx).Where(dao.SysUser.Columns().UserName, userName).Exist()
+	if err != nil {
+		return err
+	}
+	if exist {
+		return gerror.New("用户名已存在")
+	}
+	return nil
+}
 func (s *sSysUser) UserNameOrMobileExists(ctx context.Context, userName, mobile string, id ...int64) error {
 	user := (*entity.SysUser)(nil)
 	err := g.Try(ctx, func(ctx context.Context) {

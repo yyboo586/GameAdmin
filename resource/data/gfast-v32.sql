@@ -14,6 +14,10 @@
  Date: 20/11/2024 09:08:37
 */
 
+CREATE DATABASE IF NOT EXISTS `game_admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE `game_admin`;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
